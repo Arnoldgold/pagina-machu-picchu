@@ -1,25 +1,377 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Machu Picchu CUSCO LA MARAVILLA</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Machu Picchu - La Maravilla del Mundo Inca</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Playfair Display & Montserrat -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,600;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            andes: {
+              dark: '#1e3825',
+              DEFAULT: '#2e5339',
+              light: '#6b8f71',
+              accent: '#bc6c25',
+              sand: '#f8f6f0',
+              stone: '#d4c5b9'
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['Montserrat', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .hero-bg {
+      background: linear-gradient(135deg, rgba(30,56,37,0.85), rgba(46,83,57,0.75)), 
+                  url('https://images.unsplash.com/photo-1526392060635-9d6019884377?q=80&w=1920&auto=format&fit=crop') center/cover no-repeat;
+    }
+    .custom-shadow {
+      box-shadow: 0 10px 30px -5px rgba(46, 83, 57, 0.15);
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f8f6f0;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #6b8f71;
+      border-radius: 4px;
+    }
+  </style>
 </head>
-<body>
-  <header>
-    <h1>Machu Picchu</h1>
+<body class="bg-[#f8f6f0] text-gray-800 font-sans antialiased selection:bg-andes-accent selection:text-white">
+
+  <!-- Notification Banner / Modal Simulation -->
+  <div id="notification-modal" class="fixed inset-0 bg-black/60 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm">
+    <div class="bg-white rounded-2xl max-w-md w-full p-6 text-center shadow-2xl transform transition-all scale-95 opacity-0 duration-300" id="modal-content">
+      <div class="w-16 h-16 bg-amber-100 text-andes-accent rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+        <i class="fa-solid fa-ticket"></i>
+      </div>
+      <h3 class="font-serif text-2xl font-bold text-andes-dark mb-2">Reserva Oficial</h3>
+      <p class="text-gray-600 text-sm mb-6">Estás siendo redirigido al portal oficial del Ministerio de Cultura del Perú para adquirir tus boletos de ingreso a la ciudadela con anticipación.</p>
+      <div class="flex space-x-3">
+        <button onclick="closeModal()" class="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 text-gray-700 font-medium hover:bg-gray-50 transition-colors">Cancelar</button>
+        <a id="modal-proceed-btn" href="https://www.machupicchu.gob.pe" target="_blank" onclick="closeModal()" class="flex-1 px-4 py-2.5 rounded-xl bg-andes-accent text-white font-medium hover:bg-amber-700 transition-colors shadow-md">Continuar</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header & Navigation -->
+  <header class="bg-andes-dark text-white sticky top-0 z-40 shadow-md">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-full bg-andes-accent flex items-center justify-center text-white shadow-inner">
+          <i class="fa-solid fa-mountain-sun text-lg"></i>
+        </div>
+        <div>
+          <span class="font-serif text-xl sm:text-2xl font-bold tracking-wide block leading-none">MACHU PICCHU</span>
+          <span class="text-xs tracking-widest text-andes-light uppercase font-semibold">Cusco • Perú</span>
+        </div>
+      </div>
+      <nav class="hidden md:flex items-center space-x-8 text-sm font-medium">
+        <a href="#historia" class="hover:text-andes-accent transition-colors">Historia</a>
+        <a href="#maravillas" class="hover:text-andes-accent transition-colors">Ciudadela</a>
+        <a href="#consejos" class="hover:text-andes-accent transition-colors">Guía de Viaje</a>
+        <button onclick="openModal()" class="px-5 py-2.5 bg-andes-accent hover:bg-amber-700 transition-colors rounded-xl font-semibold shadow-md text-white flex items-center gap-2">
+          <i class="fa-solid fa-globe"></i> Comprar Boletos
+        </button>
+      </nav>
+      <!-- Mobile Menu Button -->
+      <button onclick="toggleMobileMenu()" class="md:hidden text-white text-2xl focus:outline-none">
+        <i class="fa-solid fa-bars" id="menu-icon"></i>
+      </button>
+    </div>
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-andes-dark border-t border-andes/30 px-6 py-4 space-y-3">
+      <a href="#historia" onclick="toggleMobileMenu()" class="block py-2 hover:text-andes-accent transition-colors">Historia</a>
+      <a href="#maravillas" onclick="toggleMobileMenu()" class="block py-2 hover:text-andes-accent transition-colors">Ciudadela</a>
+      <a href="#consejos" onclick="toggleMobileMenu()" class="block py-2 hover:text-andes-accent transition-colors">Guía de Viaje</a>
+      <button onclick="openModal()" class="w-full text-center py-3 bg-andes-accent rounded-xl font-semibold text-white mt-2">Comprar Boletos</button>
+    </div>
   </header>
 
-  <main>
-    <p>
-      Machu Picchu es una ciudadela inca del siglo XV ubicada en la región Cusco,
-      Perú. Es una de las nuevas siete maravillas del mundo y un destino imperdible.
-    </p>
+  <!-- Hero Header Section -->
+  <section class="hero-bg text-white py-24 sm:py-32 px-4 relative flex items-center justify-center text-center">
+    <div class="max-w-4xl mx-auto z-10">
+      <span class="inline-block py-1.5 px-4 rounded-full bg-andes-accent/80 text-white text-xs sm:text-sm font-semibold tracking-widest uppercase mb-6 backdrop-blur-md shadow-sm">
+        Patrimonio de la Humanidad UNESCO
+      </span>
+      <h1 class="font-serif text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight mb-6 leading-tight">
+        La Maravilla Sagrada del Imperio Inca
+      </h1>
+      <p class="text-lg sm:text-xl text-gray-200 max-w-2xl mx-auto font-light mb-10 leading-relaxed">
+        Un santuario histórico oculto entre las cumbres andinas, esculpido en piedra con precisión milenaria y rodeado de misticismo eterno.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="#maravillas" class="w-full sm:w-auto px-8 py-4 bg-andes-accent hover:bg-amber-700 text-white rounded-xl font-semibold shadow-lg transition-all transform hover:-translate-y-0.5 text-center">
+          Explorar Ciudadela
+        </a>
+        <button onclick="openModal()" class="w-full sm:w-auto px-8 py-4 bg-white/10 hover:bg-white/25 text-white border border-white/30 backdrop-blur-md rounded-xl font-semibold transition-all text-center flex items-center justify-center gap-2">
+          <i class="fa-solid fa-ticket-alt"></i> Sitio Oficial
+        </button>
+      </div>
+    </div>
+  </section>
 
-    <div class="bloque-visual">Ciudadela Inca</div>
+  <!-- Main Content Wrapper -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-24">
 
-    <a class="boton" href="https://www.machupicchu.gob.pe" target="_blank">Más información</a>
+    <!-- Introduction & History Section -->
+    <section id="historia" class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+      <div class="space-y-6">
+        <div class="inline-flex items-center gap-2 text-andes-accent font-semibold tracking-wider text-sm uppercase">
+          <i class="fa-solid fa-feather-pointed"></i> Siglo XV • Imperio del Tahuantinsuyo
+        </div>
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-andes-dark leading-snug">
+          Ingeniería asombrosa en la cima del mundo
+        </h2>
+        <p class="text-gray-600 leading-relaxed">
+          Construida alrededor del año 1450 bajo el mandato del emperador inca Pachacútec, Machu Picchu ("Montaña Vieja") sirvió como residencia de descanso y santuario religioso. Su ubicación estratégica en una ceja de selva amazónica la convirtió en una fortaleza inexpugnable y un centro agrícola avanzado.
+        </p>
+        <p class="text-gray-600 leading-relaxed">
+          Declarada una de las <strong>Nuevas Siete Maravillas del Mundo Moderno</strong> en 2007, esta obra maestra de la arquitectura y la mampostería de piedra encaja perfectamente con el paisaje natural sin usar argamasa, resistiendo siglos de sismos en la cordillera andina.
+        </p>
+        <div class="grid grid-cols-3 gap-4 pt-4 border-t border-gray-200">
+          <div>
+            <span class="block font-serif text-2xl font-bold text-andes-dark">2,430</span>
+            <span class="text-xs text-gray-500 font-medium">msnm de altitud</span>
+          </div>
+          <div>
+            <span class="block font-serif text-2xl font-bold text-andes-dark">Siglo XV</span>
+            <span class="text-xs text-gray-500 font-medium">Época Inca</span>
+          </div>
+          <div>
+            <span class="block font-serif text-2xl font-bold text-andes-dark">UNESCO</span>
+            <span class="text-xs text-gray-500 font-medium">Patrimonio Mixto</span>
+          </div>
+        </div>
+      </div>
+      <div class="relative">
+        <div class="absolute -inset-2 bg-gradient-to-r from-andes-light to-andes-accent rounded-3xl blur-lg opacity-30"></div>
+        <div class="relative rounded-2xl overflow-hidden shadow-2xl bg-white border border-gray-100">
+          <img src="https://images.unsplash.com/photo-1509233725264-49cc2ae1d9f9?q=80&w=1000&auto=format&fit=crop" 
+               alt="Machu Picchu vista panorámica" 
+               class="w-full h-96 object-cover hover:scale-105 transition-transform duration-700"
+               onerror="this.src='https://placehold.co/800x600/2e5339/ffffff?text=Machu+Picchu+Inca'">
+          <div class="p-4 bg-white">
+            <p class="text-xs text-gray-500 italic text-center"><i class="fa-solid fa-camera mr-1"></i> Vista icónica de la llaqta inca con el Huayna Picchu al fondo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Interactive Visual Blocks / Key Sections -->
+    <section id="maravillas" class="space-y-12">
+      <div class="text-center max-w-2xl mx-auto space-y-3">
+        <h2 class="font-serif text-3xl sm:text-4xl font-bold text-andes-dark">Tesoros de la Ciudadela</h2>
+        <p class="text-gray-600">Haz clic en cada sección para descubrir los puntos más emblemáticos del santuario arqueológico.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Card 1: Arquitectura -->
+        <div class="bg-white rounded-2xl p-6 custom-shadow border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl group flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-xl bg-andes/10 text-andes flex items-center justify-center text-2xl mb-6 group-hover:bg-andes group-hover:text-white transition-colors">
+              <i class="fa-solid fa-cubes"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-andes-dark mb-3">Arquitectura en Piedra</h3>
+            <p class="text-gray-600 text-sm leading-relaxed mb-4">
+              Bloques de granito pulido ensamblados a la perfección sin mezcla de cemento. Los muros antisísmicos inclinados hacia adentro son una maravilla técnica.
+            </p>
+          </div>
+          <span class="text-xs font-semibold text-andes-accent flex items-center gap-1">
+            Explorar detalles <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </span>
+        </div>
+
+        <!-- Card 2: Intihuatana -->
+        <div class="bg-white rounded-2xl p-6 custom-shadow border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl group flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-xl bg-andes/10 text-andes flex items-center justify-center text-2xl mb-6 group-hover:bg-andes group-hover:text-white transition-colors">
+              <i class="fa-solid fa-sun"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-andes-dark mb-3">El Intihuatana</h3>
+            <p class="text-gray-600 text-sm leading-relaxed mb-4">
+              El famoso "reloj solar" sagrado tallado en la roca viva, utilizado por los astrónomos incas para medir con exactitud los solsticios y equinoccios.
+            </p>
+          </div>
+          <span class="text-xs font-semibold text-andes-accent flex items-center gap-1">
+            Explorar detalles <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </span>
+        </div>
+
+        <!-- Card 3: Templo del Sol -->
+        <div class="bg-white rounded-2xl p-6 custom-shadow border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl group flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-xl bg-andes/10 text-andes flex items-center justify-center text-2xl mb-6 group-hover:bg-andes group-hover:text-white transition-colors">
+              <i class="fa-solid fa-landmark-dome"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-andes-dark mb-3">Templo del Sol</h3>
+            <p class="text-gray-600 text-sm leading-relaxed mb-4">
+              Torreón semicircular con ventanas trapezoidales alineadas perfectamente para iluminar la roca central durante el solsticio de invierno.
+            </p>
+          </div>
+          <span class="text-xs font-semibold text-andes-accent flex items-center gap-1">
+            Explorar detalles <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </span>
+        </div>
+
+        <!-- Card 4: Inti Punku -->
+        <div class="bg-white rounded-2xl p-6 custom-shadow border border-gray-100 transition-all duration-300 hover:-translate-y-2 hover:shadow-xl group flex flex-col justify-between">
+          <div>
+            <div class="w-14 h-14 rounded-xl bg-andes/10 text-andes flex items-center justify-center text-2xl mb-6 group-hover:bg-andes group-hover:text-white transition-colors">
+              <i class="fa-solid fa-door-open"></i>
+            </div>
+            <h3 class="font-serif text-xl font-bold text-andes-dark mb-3">Inti Punku</h3>
+            <p class="text-gray-600 text-sm leading-relaxed mb-4">
+              La Puerta del Sol. Antiguamente el punto de control principal y final del legendario Camino Inca, ofreciendo la primera y más impactante vista de la ciudad.
+            </p>
+          </div>
+          <span class="text-xs font-semibold text-andes-accent flex items-center gap-1">
+            Explorar detalles <i class="fa-solid fa-arrow-right text-[10px]"></i>
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Traveler's Practical Guide Section -->
+    <section id="consejos" class="bg-white rounded-3xl p-8 sm:p-12 custom-shadow border border-gray-100">
+      <div class="max-w-3xl mx-auto space-y-8">
+        <div class="text-center space-y-2">
+          <span class="text-andes-accent font-semibold text-sm uppercase tracking-widest"><i class="fa-solid fa-compass"></i> Planifica tu Aventura</span>
+          <h2 class="font-serif text-3xl font-bold text-andes-dark">Consejos Esenciales para el Viajero</h2>
+          <p class="text-gray-600 text-sm">Todo lo que necesitas saber para vivir una experiencia inolvidable y segura en Cusco.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
+          <div class="flex items-start space-x-4 bg-andes-sand/50 p-5 rounded-2xl">
+            <div class="w-10 h-10 rounded-xl bg-andes text-white flex items-center justify-center shrink-0 font-bold">1</div>
+            <div>
+              <h4 class="font-bold text-andes-dark mb-1">Mejor época para visitar</h4>
+              <p class="text-xs text-gray-600 leading-relaxed">La temporada seca (de mayo a septiembre) ofrece cielos despejados y menor probabilidad de lluvias, siendo ideal para trekking y fotografía.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-andes-sand/50 p-5 rounded-2xl">
+            <div class="w-10 h-10 rounded-xl bg-andes text-white flex items-center justify-center shrink-0 font-bold">2</div>
+            <div>
+              <h4 class="font-bold text-andes-dark mb-1">Altitud y Aclimatación</h4>
+              <p class="text-xs text-gray-600 leading-relaxed">Cusco se encuentra a 3,399 msnm y Machu Picchu a 2,430 msnm. Se recomienda pasar 2 días en la ciudad tomando mate de coca antes de visitar la llaqta.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-andes-sand/50 p-5 rounded-2xl">
+            <div class="w-10 h-10 rounded-xl bg-andes text-white flex items-center justify-center shrink-0 font-bold">3</div>
+            <div>
+              <h4 class="font-bold text-andes-dark mb-1">Cómo llegar (Tren o Trek)</h4>
+              <p class="text-xs text-gray-600 leading-relaxed">La opción clásica es tomar un tren panorámico desde Cusco u Ollantaytambo hasta Aguas Calientes (Machu Picchu Pueblo), seguido de un bus corto.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start space-x-4 bg-andes-sand/50 p-5 rounded-2xl">
+            <div class="w-10 h-10 rounded-xl bg-andes text-white flex items-center justify-center shrink-0 font-bold">4</div>
+            <div>
+              <h4 class="font-bold text-andes-dark mb-1">Reserva con Anticipación</h4>
+              <p class="text-xs text-gray-600 leading-relaxed">Los boletos de ingreso diario son limitados. Es indispensable adquirirlos con meses de antelación en la plataforma oficial del Ministerio de Cultura.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pt-6 text-center">
+          <button onclick="openModal()" class="px-8 py-4 bg-andes-accent hover:bg-amber-700 text-white font-semibold rounded-xl shadow-lg transition-all inline-flex items-center gap-2">
+            <i class="fa-solid fa-ticket"></i> Verificar Disponibilidad Oficial
+          </button>
+        </div>
+      </div>
+    </section>
+
   </main>
+
+  <!-- Footer -->
+  <footer class="bg-andes-dark text-gray-300 mt-20 border-t border-andes/30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+        <div class="flex items-center space-x-3">
+          <div class="w-8 h-8 rounded-full bg-andes-accent flex items-center justify-center text-white">
+            <i class="fa-solid fa-mountain-sun text-sm"></i>
+          </div>
+          <span class="font-serif text-xl font-bold text-white tracking-wide">Machu Picchu, Perú</span>
+        </div>
+        <p class="text-xs text-gray-400 text-center md:text-left">
+          &copy; 2026 Santuario Histórico de Machu Picchu. Todos los derechos reservados. Creado con orgullo para los viajeros del mundo.
+        </p>
+        <div class="flex space-x-4 text-lg">
+          <a href="https://www.machupicchu.gob.pe" target="_blank" class="hover:text-andes-accent transition-colors" title="Sitio Oficial"><i class="fa-solid fa-globe"></i></a>
+          <a href="#historia" class="hover:text-andes-accent transition-colors" title="Arriba"><i class="fa-solid fa-arrow-up"></i></a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Interactive JavaScript -->
+  <script>
+    // Mobile menu toggle
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobile-menu');
+      const icon = document.getElementById('menu-icon');
+      menu.classList.toggle('hidden');
+      if (menu.classList.contains('hidden')) {
+        icon.classList.remove('fa-xmark');
+        icon.classList.add('fa-bars');
+      } else {
+        icon.classList.remove('fa-bars');
+        icon.classList.add('fa-xmark');
+      }
+    }
+
+    // Modal behavior (instead of native alert/confirm)
+    function openModal() {
+      const modal = document.getElementById('notification-modal');
+      const content = document.getElementById('modal-content');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        content.classList.remove('scale-95', 'opacity-0');
+        content.classList.add('scale-100', 'opacity-100');
+      }, 10);
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('notification-modal');
+      const content = document.getElementById('modal-content');
+      content.classList.remove('scale-100', 'opacity-100');
+      content.classList.add('scale-95', 'opacity-0');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    // Close modal on background click
+    window.addEventListener('click', function(e) {
+      const modal = document.getElementById('notification-modal');
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  </script>
+
 </body>
 </html>
